@@ -1,5 +1,6 @@
 type Carrinho = {
-  clienteId: string;
+  clienteEmail: string;
+  id: string;
   produtos: [];
 };
 

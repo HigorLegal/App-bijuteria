@@ -17,35 +17,14 @@ import { Produto } from "../types/produto.ts";
 import { Carrinho } from "../types/carrinho.ts";
 
 const TelaCarrinho = (props: CarrinhoProps) => {
-  const [produtos, setProdutos] = useState([] as Produto[]);
 
-  //pra executar quando abrir a tela
-  useEffect(() => {
-    const subscribe = firestore()
-      .collection("carrinho")
-      .onSnapshot((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => {
-          return {
-            //vai juntar o id do produto do firebase
-            id: doc.id,
-            ...doc.data(),
-          };
-        }) as Produto[];
-        setProdutos(data);
-      });
-    return () => subscribe();
-  });
-
-  function editar(Id: string) {
-    props.navigation.navigate("TelaAltProduto", { id: Id });
-  }
   function deletar(id: string) {
     firestore()
       .collection("produtos")
       .doc(id)
       .delete()
       .then(() => {
-        Alert.alert("Removido", "produto removido da lista");
+        Alert.alert("Removido", "produto removido do carrinho");
       })
       .catch((error) => console.log(error));
   }
@@ -80,7 +59,7 @@ const TelaCarrinho = (props: CarrinhoProps) => {
         </Text>
         <FlatList
           style={{}}
-          data={produtos}
+          data={carrinho}
           renderItem={(item) => (
             <ItemProduto deletar={deletar} prod={item.item} editar={editar} />
           )}
@@ -92,7 +71,6 @@ const TelaCarrinho = (props: CarrinhoProps) => {
 type ItemProdutoProps = {
   prod: Produto;
   deletar: (id: string) => void;
-  editar: (Id: string) => void;
 };
 
 const ItemProduto = (props: ItemProdutoProps) => {
