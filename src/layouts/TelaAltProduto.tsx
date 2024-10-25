@@ -109,34 +109,34 @@ const TelaAltProduto = (props: AltProdutoprops) => {
         />
       </View>
 
-      <View style={{alignItems: "center", backgroundColor: '#212121'}}>
-      <Text style={[styles.titulo1]}>Nome da Bijuteria:</Text>
-      <TextInput
-        style={[styles.caixa_texto]}
-        value={nome}
-        onChangeText={(Text) => setnome(Text)}
-      />
+      <View style={{ alignItems: "center", backgroundColor: "#212121" }}>
+        <Text style={[styles.titulo1]}>Nome da Bijuteria:</Text>
+        <TextInput
+          style={[styles.caixa_texto]}
+          value={nome}
+          onChangeText={(Text) => setnome(Text)}
+        />
 
-      <Text style={styles.titulo1}>Código de Barras:</Text>
-      <TextInput
-        style={[styles.caixa_texto]}
-        value={codigoBarras}
-        onChangeText={(Text) => setcodigoBarras(Text)}
-      />
-      <Text style={styles.titulo1}>Preço de venda:</Text>
+        <Text style={styles.titulo1}>Código de Barras:</Text>
+        <TextInput
+          style={[styles.caixa_texto]}
+          value={codigoBarras}
+          onChangeText={(Text) => setcodigoBarras(Text)}
+        />
+        <Text style={styles.titulo1}>Preço de venda:</Text>
 
-      <TextInput
-        maxLength={7}
-        value={preco.toString()}
-        onChangeText={(text) => setpreco(text)}
-        style={[styles.caixa_texto]}
-      />
+        <TextInput
+          maxLength={7}
+          value={preco.toString()}
+          onChangeText={(text) => setpreco(text)}
+          style={[styles.caixa_texto]}
+        />
       </View>
 
       <View
         style={{
           flexDirection: "row",
-          justifyContent: 'space-evenly',
+          justifyContent: "space-evenly",
           padding: 0,
           marginTop: "20%",
           alignItems: "center",

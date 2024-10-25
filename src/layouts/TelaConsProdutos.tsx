@@ -84,7 +84,7 @@ const TelaConsProdutos = (props: ConsProdutosprops) => {
           borderBottomStartRadius: 10,
           backgroundColor: "#ffa941",
           padding: 10,
-          marginBottom:0
+          marginBottom:30
         }}
         onPress={() => {
           props.navigation.navigate("TelaCadProdutos");

@@ -1,30 +1,40 @@
-import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import firestore from "@react-native-firebase/firestore";
-import { PrincipalProps } from "../navigation/HomeNavigator.tsx";
-import { styles } from "../styles/stylesPrincipal.ts";
-import { Produto } from "../types/produto.ts";
+import { Alert, FlatList, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Produto } from "../types/produto";
+import { Carrinho } from "../types/carrinho";
+import { styles } from "../styles/stylesCadastrar";
+import fireStore from "@react-native-firebase/firestore";
+import { PrincipalProps } from "../navigation/HomeNavigator";
+import { useEffect, useState } from "react";
+import { useLinkProps } from "@react-navigation/native";
 
 const TelaPrincipal = (props: PrincipalProps) => {
-
   const [produtos, setProdutos] = useState([] as Produto[]);
+  const [Prodcomprados, setProdcomprados] = useState([] as Produto[]);
+  const [id, setId ] = useState([] as string[]);
   
-  function produtos() {
-    props.navigation.navigate("TelaConsProdutos");
-  }
 
+
+  //pra executar quando abrir a tela
   useEffect(() => {
-    const subscribe = firestore()
-      .collection("produtos")
+    
+        const subscribe = fireStore().collection("carrinho")
+        .where('clienteEmail','==', props.route.params.usuario.email)
+        .onSnapshot((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => {
+            return {
+              //vai juntar o id do produto do firebase
+              id: doc.data()
+              
+            };
+          });
+        setId(data);
+        });
+        return () => subscribe();
+      });
 
+    const subscribe = fireStore()
+
+      .collection("produtos")
       .onSnapshot((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {
           return {
@@ -36,139 +46,198 @@ const TelaPrincipal = (props: PrincipalProps) => {
         setProdutos(data);
       });
     return () => subscribe();
-  });
-  return (
-    <ScrollView style={styles.tela}>
-      <View style={{ flex: 1, alignItems: "flex-start" }}>
-        <Pressable
-          style={{
-            borderBottomStartRadius: 1,
-            borderTopStartRadius: 1,
-            borderTopEndRadius: 1,
-            backgroundColor: "#ffa941",
-            padding: 10,
-            borderRadius: 50,
-          }}
-          onPress={() => {
+
+  
+   
+      function adicionar(produto : Produto) {
+        //o ... e como se estivece estraindo os valores da lista (se esqucer e so ler que tu entende)
+        setProdcomprados(lista => [...lista, produto]);
+    
+    
+      
+    fireStore()
+          .collection("carrinho")
+          .doc()
+          .update(carrinho)
+          .then(() => {
+            Alert.alert("Produto", "Alterado com sucesso");
             props.navigation.goBack();
-          }}
-        >
-          <Text style={{ fontSize: 30, color: "white" }}>voltar</Text>
-        </Pressable>
+          })
+          .catch((error) => console.log(error));
+      }
+      
+    
+
+  
+        
+    
+  
+ 
+  return (
+
+    <ScrollView style={styles.tela}>
+    
+<View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+        
+        }}
+      >
+        <Pressable
+                style={{borderBottomStartRadius:1,
+                    borderTopStartRadius:1,
+                borderTopEndRadius:1,
+              backgroundColor: '#ffa941',
+              padding: 10,
+              borderRadius: 50,
+              marginBottom:50
+             
+            }}
+            onPress={() => {
+              props.navigation.goBack();
+            }}>
+            <Text style={{fontSize: 30, color: 'white'}}>voltar</Text>
+          </Pressable>
+
+<Pressable
+                style={{borderBottomEndRadius:1,
+                    borderTopEndRadius:1,
+                    borderTopStartRadius:1,
+              backgroundColor: '#ffa941',
+              padding: 15,
+              borderRadius: 50,
+              marginBottom:50
+             
+            }}
+            onPress={() => {
+              props.navigation.navigate('TelaCarrinho');
+            }}>
+            <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/6713/6713723.png",
+            }}
+            style={{
+              width: 40,
+              height: 40,
+            }}></Image>
+          </Pressable>
+
       </View>
 
       <View style={{ flex: 1, alignItems: "center" }}>
-       
-      <FlatList
-          style={{}}
-          data={produtos}
-          renderItem={(item) => (
-            <ItemProduto deletar={deletar} prod={item.item} editar={editar} />
-          )}
-        
-        
+        <Text
+          style={{
+            marginBottom: 50,
+            color: "white",
+            fontSize: 40,
+            fontWeight: "bold",
+          }}
+        >
+          lista de produtos
+        </Text>
+
         {
-        props.route.params.usuario.cargo == true &&
+          props.route.params.usuario.cargo == true &&
 
         <Pressable
         style={{
-          borderBottomStartRadius: 1,
-          borderTopEndRadius: 1,
-          marginTop: "10%",
+          borderBottomEndRadius: 10,
+          borderBottomStartRadius: 10,
           backgroundColor: "#ffa941",
           padding: 10,
-          borderRadius: 50,
+          marginBottom:50
         }}
-        onPress={produtos}
+        onPress={() => {
+          props.navigation.navigate("TelaConsProdutos");
+        }}
       >
-        <Text style={{ fontSize: 40, color: "white" }}>
-        gerenciar de produtos
+     
+        <Text style={{ fontSize: 30, color: "white", textAlign: "center" }}>
+          gerenciar produtos
         </Text>
       </Pressable>
-
-        }
-        
+       }
+       <FlatList
+          style={{}}
+          data={produtos}
+          renderItem={(item) => (
+            <ItemProduto  prod={item.item} adicionar={adicionar} />
+          )}
+        />
       </View>
     </ScrollView>
   );
-  type ItemProdutoProps = {
-    prod: Produto;
-    deletar: (id: string) => void;
-    editar: (Id: string) => void;
-  };
-  
-  const ItemProduto = (props: ItemProdutoProps) => {
-    return (
-      <View
+};
+
+type ItemProdutoProps = {
+  prod: Produto;
+  adicionar: (produto:Produto ) => void;
+
+};
+
+const ItemProduto = (props: ItemProdutoProps) => {
+  return (
+    <View
+      style={{
+        marginBottom: 20,
+        borderColor: "black",
+        borderRadius: 30,
+        backgroundColor: "white",
+      }}
+    >
+      <Text
         style={{
-          marginBottom: 20,
-          borderColor: "black",
-          borderRadius: 30,
-          backgroundColor: "white",
+          textAlign: "center",
+          fontSize: 40,
+          fontWeight: "bold",
+          color: "#ffa941",
         }}
       >
-        <Text
+        {props.prod.nome}
+      </Text>
+
+      <Text style={{ margin: 10, fontSize: 20, color: "black" }}>
+        {"\ncodigo de barras : " +
+          props.prod.codigoBarras +
+          "\npreço : R$" +
+          props.prod.preco.toFixed(2)}
+      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 10,
+        }}
+      >
+        <Pressable
           style={{
-            textAlign: "center",
-            fontSize: 40,
-            fontWeight: "bold",
-            color: "#ffa941",
+            borderBottomStartRadius: 10,
+            borderTopEndRadius: 10,
+            padding: 15,
+            backgroundColor: "#44ed00",
+          }}
+          onPress={() => {
+            props.adicionar(props.prod);
           }}
         >
-          {props.prod.nome}
-        </Text>
-  
-        <Text style={{ margin: 10, fontSize: 20, color: "black" }}>
-          {"\ncodigo de barras : " +
-            props.prod.codigoBarras +
-            "\npreço : R$" +
-            props.prod.preco.toFixed(2)}
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 10,
-          }}
-        >
-          <Pressable
+   <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/6713/6713723.png",
+            }}
             style={{
-              borderBottomStartRadius: 10,
-              borderTopEndRadius: 10,
-              padding: 15,
-              backgroundColor: "red",
-            }}
-            onPress={() => {
-              props.deletar(props.prod.id);
-            }}
-          >
-            <Text style={{ color: "black", fontSize: 30 }}>X</Text>
-          </Pressable>
-  
-          <Pressable
-            style={{
-              borderBottomStartRadius: 10,
-              borderTopEndRadius: 10,
-              padding: 15,
-              backgroundColor: "gray",
-            }}
-            onPress={() => {
-              props.editar(props.prod.id);
-            }}
-          >
-            <Image
-              source={{
-                uri: "https://cdn-icons-png.flaticon.com/512/1828/1828911.png",
-              }}
-              style={{
-                width: 40,
-                height: 40,
-              }}
-            />
-          </Pressable>
-        </View>
+              width: 40,
+              height: 40,
+            }}></Image>
+
+        </Pressable>
+
+      
       </View>
-    );
+    </View>
+  );
 };
 
 export default TelaPrincipal;
+
+
