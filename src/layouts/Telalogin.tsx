@@ -28,7 +28,7 @@ const TelaLogin = (props: LoginProps) => {
 
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
-  const [carrinho, setCar] = useState([] as Carrinho[]);
+  const [carrinho, setCarrinho] = useState([] as Carrinho[]);
 
   function Telacadastrar() {
     props.navigation.navigate("TelaCadastrar");
@@ -39,60 +39,78 @@ const TelaLogin = (props: LoginProps) => {
 
   //exibi a mensagem que esta pragramada
 
-  function logar() {
-    //if (verificarCampos()) {
+  async function logar() {
+    if (verificarCampos()) {
+      let Usuario = {
+        email: login,
+        senha: senha,
+        cargo: isEnabled,
+      } as usuario;
 
-    let Usuario = {
-      email: login,
-      senha: senha,
-      cargo: isEnabled,
-    } as usuario;
-
-    let carro = {
-      clienteEmail: login,
-      produtos: carrinho,
-    } as Carrinho;
-
-    props.navigation.navigate("TelaPrincipal", { usuario: Usuario });
-    
-      auth()
-        .signInWithEmailAndPassword(login, senha)
-
-        //then = depois oque acentece depois do primeiro
-        .then(() => {
-
-//pra executar quando abrir a tela
-
-firestore()
+      let cliente = [] as Carrinho[];
+// o wait e porque esse coiso ele vai simultaneo entao enquanto ta preucurando ele faz o 
+//de baixo e o valor fica null com o await ele espera achar e depois segue o codigo 
+   
+const data = await firestore()
         .collection("carrinho")
-        .add(carro)
-        .then(() => {
-          
-        })
-        .catch((error) => console.log(error));
+        .where("clienteEmail", "==", Usuario.email)
+        .get();
+//ele vai fazer o loop e arma
+      cliente = data.docs.map((doc) => {
+        return {
+          //vai juntar o id do produto do firebase
+          id: doc.id,
+          ...doc.data(),
+        };
+      }) as Carrinho[];
 
-// useEffect(() => {
-//   const subscribe = firestore().collection("carrinho").onSnapshot((querySnapshot) => {
-//     const data = querySnapshot.docs.map((doc) => {
-//       return {
-//         //vai juntar o id do produto do firebase
-//         clienteEmail: doc.data(ClienteEMAIL)
-//         
-//       };
-//     }) as Carrinho[];
-//   setCar(data);
-//   });
-//   return () => subscribe();
-// });
 
-          Alert.alert('usuario logado com sucesso');
-          props.navigation.navigate('TelaPrincipal',{usuario:Usuario});
-        })
+      if (cliente.length == 0) {
+        let carro = {
+          clienteEmail: login,
+          produtos: [],
+        } as Carrinho;
 
-        .catch(error => {
-          tratarErros(String(error));
-        });
-    }  
+        auth()
+          .signInWithEmailAndPassword(login, senha)
+
+          //then = depois oque acentece depois do primeiro
+          .then(() => {
+            //pra executar quando abrir a tela
+
+            firestore()
+              .collection("carrinho")
+              .add(carro)
+              .then(() => {})
+              .catch((error) => console.log(error));
+
+            Alert.alert("usuario logado com sucesso");
+            props.navigation.navigate("TelaPrincipal", { usuario: Usuario });
+          })
+
+          .catch((error) => {
+            tratarErros(String(error));
+          });
+      } else {
+        auth()
+          .signInWithEmailAndPassword(login, senha)
+
+          //then = depois oque acentece depois do primeiro
+          .then(() => {
+            //pra executar quando abrir a tela
+
+            Alert.alert("usuario logado com sucesso");
+            props.navigation.navigate("TelaPrincipal", { usuario: Usuario });
+          })
+
+          .catch((error) => {
+            tratarErros(String(error));
+          });
+      }
+
+      props.navigation.navigate("TelaPrincipal", { usuario: Usuario });
+    }
+  }
 
   function verificarCampos(): boolean {
     if (login == "") {
@@ -121,6 +139,11 @@ firestore()
     <ScrollView style={styles.tela}>
       <View style={{ flex: 1, alignItems: "center" }}>
         <View>
+          <Text style={[styles.titulo2, { marginTop: 10, color: "orange" }]}>
+            Bijus de Divas
+          </Text>
+        </View>
+        <View>
           <Text style={styles.titulo2}>Login</Text>
         </View>
         <Image
@@ -145,10 +168,10 @@ firestore()
           onChangeText={(Text) => setSenha(Text)}
         />
 
-        <View style={{flexDirection: "row",}}>
-          <Text style={{color:'white',fontSize:30
-            ,fontWeight: 'bold'
-          }}>Funcionario</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
+            Funcionario
+          </Text>
           <Switch
             style={{}}
             trackColor={{ false: "#767577", true: "orange" }}
@@ -159,7 +182,9 @@ firestore()
           />
         </View>
         <Pressable
-          onPress={logar}
+          onPress={() =>
+            logar()
+          }
           style={(state) => [
             styles.botaoEntrar,
             { marginTop: 30 },

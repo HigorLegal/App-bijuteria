@@ -1,27 +1,28 @@
 import {
   NativeStackScreenProps,
   createNativeStackNavigator,
-} from '@react-navigation/native-stack';
-import TelaPrincipal from '../layouts/TelaPrincipal';
-import TelaCadastrar from '../layouts/TelaCadastrar';
-import TelaLogin from '../layouts/Telalogin';
-import TelaEsqueceuS from '../layouts/TelaEsqueceuS';
-import TelaCadProdutos from '../layouts/TelaCadProdutos';
-import TelaConsProdutos from '../layouts/TelaConsProdutos';
-import { usuario } from '../types/usuario';
-import TelaAltProduto from '../layouts/TelaAltProduto';
-import TelaCarrinho from '../layouts/TelaCarrinho';
+} from "@react-navigation/native-stack";
+import TelaPrincipal from "../layouts/TelaPrincipal";
+import TelaCadastrar from "../layouts/TelaCadastrar";
+import TelaLogin from "../layouts/Telalogin";
+import TelaEsqueceuS from "../layouts/TelaEsqueceuS";
+import TelaCadProdutos from "../layouts/TelaCadProdutos";
+import TelaConsProdutos from "../layouts/TelaConsProdutos";
+import { usuario } from "../types/usuario";
+import TelaAltProduto from "../layouts/TelaAltProduto";
+import TelaCarrinho from "../layouts/TelaCarrinho";
+import { Carrinho } from "../types/carrinho";
 
 //Define quais as telas e os parâmetros de cada tela
 type RootStackParamList = {
-  TelaPrincipal: {usuario: usuario};
+  TelaPrincipal: { usuario: usuario };
   TelaLogin: undefined; //Não possui parâmetros
   TelaEsqueceuS: undefined; //Não possui parâmetros
   TelaCadastrar: undefined; //Não possui parâmetros
   TelaCadProdutos: undefined; //Não possui parâmetros
   TelaConsProdutos: undefined; //Não possui parâmetros
-  TelaAltProduto: {id: string}; 
-  TelaCarrinho: undefined; //Não possui parâmetros
+  TelaAltProduto: { id: string };
+  TelaCarrinho: { car: Carrinho,usuario:usuario};
 };
 
 //Cria a Stack (tipo de navegação onde as telas estão em uma "pilha")
@@ -33,7 +34,7 @@ const HomeNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName="TelaLogin" //nome da tela inicial
-      screenOptions={{headerShown: false}} //headerShown define se o cabeçalho irá ser exibido
+      screenOptions={{ headerShown: false }} //headerShown define se o cabeçalho irá ser exibido
     >
       {/* define uma tela dando um nome(igual ao RootStackParamList) e qual o componente será carregado */}
 
@@ -52,8 +53,6 @@ const HomeNavigator = () => {
       <Stack.Screen name="TelaCadastrar" component={TelaCadastrar} />
 
       <Stack.Screen name="TelaEsqueceuS" component={TelaEsqueceuS} />
-
-  
     </Stack.Navigator>
   );
 };
@@ -62,36 +61,33 @@ const HomeNavigator = () => {
 //essas propriedades são usadas lá em layouts/TelaPincipal.tsx
 type PrincipalProps = NativeStackScreenProps<
   RootStackParamList,
-  'TelaPrincipal'
+  "TelaPrincipal"
 >;
-type LoginProps = NativeStackScreenProps<RootStackParamList, 'TelaLogin'>;
+type LoginProps = NativeStackScreenProps<RootStackParamList, "TelaLogin">;
 type EsqueceuProps = NativeStackScreenProps<
   RootStackParamList,
-  'TelaEsqueceuS'
+  "TelaEsqueceuS"
 >;
 type CadProdutosprops = NativeStackScreenProps<
   RootStackParamList,
-  'TelaCadProdutos'
+  "TelaCadProdutos"
 >;
 type ConsProdutosprops = NativeStackScreenProps<
   RootStackParamList,
-  'TelaConsProdutos'
+  "TelaConsProdutos"
 >;
 
 type AltProdutoprops = NativeStackScreenProps<
   RootStackParamList,
-  'TelaAltProduto'
+  "TelaAltProduto"
 >;
 
 type CadastrarProps = NativeStackScreenProps<
   RootStackParamList,
-  'TelaCadastrar'
+  "TelaCadastrar"
 >;
 
-type CarrinhoProps = NativeStackScreenProps<
-  RootStackParamList,
-  'TelaCarrinho'
->;
+type CarrinhoProps = NativeStackScreenProps<RootStackParamList, "TelaCarrinho">;
 
 //exporta o navegador da pilha para ficar visível para outros arquivos
 export default HomeNavigator;
@@ -105,5 +101,5 @@ export type {
   CadProdutosprops,
   ConsProdutosprops,
   AltProdutoprops,
-  CarrinhoProps
+  CarrinhoProps,
 };

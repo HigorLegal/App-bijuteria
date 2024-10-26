@@ -58,8 +58,6 @@ const TelaCadProdutos = (props: CadProdutosprops) => {
   }
   return (
     <ScrollView style={styles.tela}>
- 
-
       <View style={{ flex: 1, alignItems: "center" }}>
         <Text style={styles.titulo1}>cadastrar produto</Text>
       </View>
