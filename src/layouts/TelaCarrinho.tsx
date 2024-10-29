@@ -5,6 +5,7 @@ import {
   Image,
   ImageBackground,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,17 +18,40 @@ import { Produto } from "../types/produto.ts";
 import { Carrinho } from "../types/carrinho.ts";
 
 const TelaCarrinho = (props: CarrinhoProps) => {
+const [listaNova, setLista] = useState(props.route.params.car.produtos)
+const [usuario, setusuario] = useState(props.route.params.usuario)
 
-  function deletar(id: string) {
+
+  function retirar(id: number ) {
+
+   
+
+    listaNova.splice(id, 1)
+
+    Alert.alert('Produto',"Removido do carrinho");  
+    
+   
+
+
+    let veiculo  ={
+      clienteEmail: props.route.params.car.clienteEmail,
+      id: props.route.params.car.id,
+      produtos: listaNova
+    }as Carrinho;
+
+    
+
     firestore()
-      .collection("produtos")
-      .doc(id)
-      .delete()
+      .collection("carrinho")
+      .doc(props.route.params.car.id)
+      .update(veiculo)
       .then(() => {
-        Alert.alert("Removido", "produto removido do carrinho");
+       // Alert.alert("Removido", "produto removido do carrinho");
       })
+      
       .catch((error) => console.log(error));
   }
+
   return (
     <ScrollView style={styles.tela}>
       <Pressable
@@ -38,7 +62,7 @@ const TelaCarrinho = (props: CarrinhoProps) => {
           padding: 10,
         }}
         onPress={() => {
-          props.navigation.goBack();
+          props.navigation.navigate("TelaPrincipal",{usuario:usuario});
         }}
       >
         <Text style={{ fontSize: 30, color: "white", textAlign: "center" }}>
@@ -59,9 +83,9 @@ const TelaCarrinho = (props: CarrinhoProps) => {
         </Text>
         <FlatList
           style={{}}
-          data={carrinho}
+          data={listaNova}
           renderItem={(item) => (
-            <ItemProduto deletar={deletar} prod={item.item} editar={editar} />
+            <ItemProduto retirar={retirar} prod={item.item} numOrd={item.index}   />
           )}
         />
       </View>
@@ -69,11 +93,13 @@ const TelaCarrinho = (props: CarrinhoProps) => {
   );
 };
 type ItemProdutoProps = {
+  numOrd :number,
   prod: Produto;
-  deletar: (id: string) => void;
+  retirar: (id: number) => void;
 };
 
 const ItemProduto = (props: ItemProdutoProps) => {
+  
   return (
     <View
       style={{
@@ -115,32 +141,10 @@ const ItemProduto = (props: ItemProdutoProps) => {
             backgroundColor: "red",
           }}
           onPress={() => {
-            props.deletar(props.prod.id);
+            props.retirar(props.numOrd);
           }}
         >
           <Text style={{ color: "black", fontSize: 30 }}>X</Text>
-        </Pressable>
-
-        <Pressable
-          style={{
-            borderBottomStartRadius: 10,
-            borderTopEndRadius: 10,
-            padding: 15,
-            backgroundColor: "gray",
-          }}
-          onPress={() => {
-            props.editar(props.prod.id);
-          }}
-        >
-          <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/1828/1828911.png",
-            }}
-            style={{
-              width: 40,
-              height: 40,
-            }}
-          />
         </Pressable>
       </View>
     </View>

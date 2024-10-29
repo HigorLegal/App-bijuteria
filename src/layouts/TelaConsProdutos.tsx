@@ -17,6 +17,7 @@ import { Produto } from "../types/produto.ts";
 
 const TelaConsProdutos = (props: ConsProdutosprops) => {
   const [produtos, setProdutos] = useState([] as Produto[]);
+  
 
   //pra executar quando abrir a tela
   useEffect(() => {
@@ -79,21 +80,21 @@ const TelaConsProdutos = (props: ConsProdutosprops) => {
           lista de produtos
         </Text>
         <Pressable
-        style={{
-          borderBottomEndRadius: 10,
-          borderBottomStartRadius: 10,
-          backgroundColor: "#ffa941",
-          padding: 10,
-          marginBottom:30
-        }}
-        onPress={() => {
-          props.navigation.navigate("TelaCadProdutos");
-        }}
-      >
-        <Text style={{ fontSize: 30, color: "white", textAlign: "center" }}>
-          cadastrar produto
-        </Text>
-      </Pressable>
+          style={{
+            borderBottomEndRadius: 10,
+            borderBottomStartRadius: 10,
+            backgroundColor: "#ffa941",
+            padding: 10,
+            marginBottom: 30,
+          }}
+          onPress={() => {
+            props.navigation.navigate("TelaCadProdutos");
+          }}
+        >
+          <Text style={{ fontSize: 30, color: "white", textAlign: "center" }}>
+            cadastrar produto
+          </Text>
+        </Pressable>
         <FlatList
           style={{}}
           data={produtos}

@@ -8,48 +8,51 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Produto } from "../types/produto.ts";
+import { Anel } from "../types/anel.ts";
 import {
-  CadProdutosprops,
-  PrincipalProps,
+    CadPersoprops,
+  
 } from "../navigation/HomeNavigator.tsx";
 import { styles } from "../styles/stylesPrincipal.ts";
 import firestore from "@react-native-firebase/firestore";
 
-const TelaCadProdutos = (props: CadProdutosprops) => {
-  const [nome, setnome] = useState("");
-  const [codigoBarras, setcodigoBarras] = useState("");
-  const [preco, setpreco] = useState("");
+const TelaCadPerso = (props: CadPersoprops) => {
+  const [id, setId] = useState("");
+  const [material, setMaterial] = useState("");
+  const [tamanho, settamanho] = useState("");
 
-  function verProdutos() {
-    props.navigation.navigate("TelaConsProdutos");
-  }
+  
   function cadastrar() {
     if (verificaCampos()) {
-      let produto = {
-        nome: nome,
-        codigoBarras: codigoBarras,
-        preco: Number.parseFloat(preco),
-      } as Produto;
+
+      let anel = {
+        material: material,
+        clienteEmail: props.route.params.usu.email,
+    nome: id ,
+tamanho: parseInt(tamanho)
+        
+      } as Anel;
 
       firestore()
-        .collection("produtos")
-        .add(produto)
+        .collection("AnelPerso")
+        .add(anel)
         .then(() => {
-          Alert.alert("produto", "produto cadastrado com sucesso!");
-          setnome("");
-          setcodigoBarras("");
-          setpreco("0");
+          Alert.alert("Anel", "Anel cadastrado com sucesso!");
+         
         })
         .catch((error) => console.log(error));
     }
   }
   function verificaCampos() {
-    if (nome == "") {
+    if (material == "") {
       Alert.alert("Nome em branco", "Digite um nome");
       return false;
     }
-    if (codigoBarras == "") {
+    if (id == "") {
+      Alert.alert("Nome em branco", "Digite um nome");
+      return false;
+    }
+    if (tamanho == "") {
       Alert.alert("Código de Barras em branco", "Digite um código de barras");
       return false;
     }
@@ -58,27 +61,49 @@ const TelaCadProdutos = (props: CadProdutosprops) => {
   }
   return (
     <ScrollView style={styles.tela}>
+
+<View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Pressable
+          style={{
+            borderBottomStartRadius: 1,
+            borderTopStartRadius: 1,
+            borderTopEndRadius: 1,
+            backgroundColor: "#ffa941",
+            padding: 10,
+            borderRadius: 50,
+            marginBottom: 50,
+          }}
+          onPress={() => {
+            props.navigation.goBack();
+          }}><Text>voltar</Text></Pressable>
+          </View>
+
       <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={styles.titulo1}>cadastrar produto</Text>
+        <Text style={styles.titulo1}>cadastrar Anel</Text>
       </View>
       <View style={{ flex: 1, alignItems: "center" }}>
         <Text style={styles.titulo1}>nome</Text>
         <TextInput
           style={[styles.caixa_texto]}
-          value={nome}
-          onChangeText={(Text) => setnome(Text)}
+          value={id}
+          onChangeText={(Text) => setId(Text)}
         />
 
-        <Text style={styles.titulo1}>codigoBarras</Text>
+        <Text style={styles.titulo1}>material</Text>
         <TextInput
           style={[styles.caixa_texto]}
-          onChangeText={(Text) => setcodigoBarras(Text)}
+          onChangeText={(Text) => setMaterial(Text)}
         />
-        <Text style={styles.titulo1}>preco</Text>
+        <Text style={styles.titulo1}>tamanho</Text>
         <TextInput
           maxLength={7}
-          value={preco.toString()}
-          onChangeText={(text) => setpreco(text)}
+          value={tamanho.toString()}
+          onChangeText={(text) => settamanho(text)}
           style={[styles.caixa_texto]}
         />
 
@@ -116,6 +141,7 @@ const TelaCadProdutos = (props: CadProdutosprops) => {
               cadastrar
             </Text>
           </Pressable>
+{props.route.params.usu.cargo == true &&
           <Pressable
             style={(state) => [
               {
@@ -129,7 +155,10 @@ const TelaCadProdutos = (props: CadProdutosprops) => {
               },
               state.pressed ? { opacity: 0.5 } : null,
             ]}
-            onPress={verProdutos}
+            onPress={()=> props.navigation.navigate('TelaConsPerso',{usu:{
+                email: props.route.params.usu.email,
+                senha: props.route.params.usu.senha,
+                cargo: props.route.params.usu.cargo,}})}
           >
             <Text
               style={{
@@ -142,10 +171,11 @@ const TelaCadProdutos = (props: CadProdutosprops) => {
               ver produtos
             </Text>
           </Pressable>
+          }
         </View>
       </View>
     </ScrollView>
   );
 };
 
-export default TelaCadProdutos;
+export default TelaCadPerso;
