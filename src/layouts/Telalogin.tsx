@@ -45,8 +45,8 @@ const TelaLogin = (props: LoginProps) => {
         email: login,
         senha: senha,
         cargo: isEnabled,
-      } as usuario;
-
+      }as usuario;
+      
       let cliente = [] as Carrinho[];
 // o wait e porque esse coiso ele vai simultaneo entao enquanto ta preucurando ele faz o 
 //de baixo e o valor fica null com o await ele espera achar e depois segue o codigo 
@@ -116,8 +116,8 @@ const data = await firestore()
     if (login == "") {
       Alert.alert("Email vazio", "o email esta vazio");
       return false;
-    } else if (senha == "") {
-      Alert.alert("Senha em Branco", "A senha esta vazia");
+    } else if (senha == "" && senha.length < 6) {
+      Alert.alert("Senha em Branco", "A senha esta muito fraca ");
       return false;
     }
     return true;
@@ -139,7 +139,7 @@ const data = await firestore()
     <ScrollView style={styles.tela}>
       <View style={{ flex: 1, alignItems: "center" }}>
         <View>
-          <Text style={[styles.titulo2, { marginTop: 10, color: "orange" }]}>
+          <Text style={[styles.titulo2, { marginTop: 10, color: "#ffcb52" }]}>
             Bijus de Divas
           </Text>
         </View>

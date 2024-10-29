@@ -28,7 +28,7 @@ const [usuario, setusuario] = useState(props.route.params.usuario)
 
     listaNova.splice(id, 1)
 
-    Alert.alert(''+listaNova);  
+    Alert.alert('Produto',"Removido do carrinho");  
     
    
 
@@ -45,7 +45,7 @@ const [usuario, setusuario] = useState(props.route.params.usuario)
       .collection("carrinho")
       .doc(props.route.params.car.id)
       .update(veiculo)
-      .then(() => {props.navigation.reset
+      .then(() => {
        // Alert.alert("Removido", "produto removido do carrinho");
       })
       

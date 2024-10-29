@@ -10,6 +10,8 @@ import TelaCadProdutos from "../layouts/TelaCadProdutos";
 import TelaConsProdutos from "../layouts/TelaConsProdutos";
 import { usuario } from "../types/usuario";
 import TelaAltProduto from "../layouts/TelaAltProduto";
+import TelaCadPerso from "../layouts/TelaCadPerso";
+import TelaConsPerso from "../layouts/TelaConsPerso";
 import TelaCarrinho from "../layouts/TelaCarrinho";
 import { Carrinho } from "../types/carrinho";
 
@@ -21,6 +23,8 @@ type RootStackParamList = {
   TelaCadastrar: undefined; //Não possui parâmetros
   TelaCadProdutos: undefined; //Não possui parâmetros
   TelaConsProdutos: undefined; //Não possui parâmetros
+  TelaCadPerso:  { usu: usuario }; //Não possui parâmetros
+  TelaConsPerso:  { usu: usuario }; //Não possui parâmetros
   TelaAltProduto: { id: string };
   TelaCarrinho: { car: Carrinho,usuario:usuario};
 };
@@ -46,6 +50,10 @@ const HomeNavigator = () => {
 
       <Stack.Screen name="TelaConsProdutos" component={TelaConsProdutos} />
 
+      <Stack.Screen name="TelaCadPerso" component={TelaCadPerso} />
+
+      <Stack.Screen name="TelaConsPerso" component={TelaConsPerso} />
+
       <Stack.Screen name="TelaCarrinho" component={TelaCarrinho} />
 
       <Stack.Screen name="TelaPrincipal" component={TelaPrincipal} />
@@ -64,6 +72,10 @@ type PrincipalProps = NativeStackScreenProps<
   "TelaPrincipal"
 >;
 type LoginProps = NativeStackScreenProps<RootStackParamList, "TelaLogin">;
+
+type CadPersoprops = NativeStackScreenProps<RootStackParamList, "TelaCadPerso">;
+
+type ConsPersoprops = NativeStackScreenProps<RootStackParamList, "TelaConsPerso">;
 type EsqueceuProps = NativeStackScreenProps<
   RootStackParamList,
   "TelaEsqueceuS"
@@ -102,4 +114,6 @@ export type {
   ConsProdutosprops,
   AltProdutoprops,
   CarrinhoProps,
+  CadPersoprops,
+  ConsPersoprops
 };

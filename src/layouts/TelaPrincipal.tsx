@@ -19,7 +19,7 @@ const TelaPrincipal = (props: PrincipalProps) => {
   
   const [carrinho, setCarrinho] = useState([] as Carrinho[]);
   const [produtos, setProdutos] = useState([] as Produto[]);
-  const [Prodcomprados, setProdcomprados] = useState(carrinho[0].produtos);
+  const [Prodcomprados, setProdcomprados] = useState([] as Produto[]);
 
   //pra executar quando abrir a tela
   useEffect(() => {
@@ -54,6 +54,10 @@ const TelaPrincipal = (props: PrincipalProps) => {
     return () => subscribe();
   });
   function adicionar(produto: Produto) {
+
+
+
+    
     //o ... e como se estivece estraindo os valores da lista (se esqucer e so ler que tu entende)
     setProdcomprados((lista) => [...lista, produto]);
 
@@ -162,6 +166,28 @@ const TelaPrincipal = (props: PrincipalProps) => {
             </Text>
           </Pressable>
         )}
+      
+          <Pressable
+            style={{
+              borderBottomEndRadius: 10,
+              borderBottomStartRadius: 10,
+              backgroundColor: "#ffa941",
+              padding: 10,
+              marginBottom: 50,
+            }}
+            onPress={() => {
+              props.navigation.navigate("TelaCadPerso",{usu:{
+                email: props.route.params.usuario.email,
+                  senha: props.route.params.usuario.senha,
+                  cargo: props.route.params.usuario.cargo,
+              }});
+            }}
+          >
+            <Text style={{ fontSize: 30, color: "white", textAlign: "center" }}>
+              cadastrar anel sobre medida
+            </Text>
+          </Pressable>
+        
         <FlatList
           style={{}}
           data={produtos}

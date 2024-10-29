@@ -49,8 +49,8 @@ const TelaCadastrar = (props: CadastrarProps) => {
     if (email == "") {
       Alert.alert("Email vazio", "o email esta vazio");
       return false;
-    } else if (senha.length < 8) {
-      Alert.alert("Senha Fraca", "a senha deve ter pelo menos 8 digitos");
+    } else if (senha.length < 6) {
+      Alert.alert("Senha Fraca", "a senha deve ter pelo menos 6 digitos");
       return false;
     } else if (senha != confSenha) {
       Alert.alert("Senhas Diferentes", "as senhas nao sao iguais");
